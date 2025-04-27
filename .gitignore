@@ -23,6 +23,9 @@ incremental_db/
 stamp/
 *.txt
 *.summary
+hps_isw_handoff/
+*.vvp
+*.vcd
 
 ## OS
 .DS_Store
