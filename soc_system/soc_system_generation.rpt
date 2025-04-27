@@ -12,6 +12,8 @@ Progress: Adding pll_0 [altera_pll 24.1]
 Progress: Parameterizing module pll_0
 Progress: Adding pulse_delay_pio [altera_avalon_pio 24.1]
 Progress: Parameterizing module pulse_delay_pio
+Progress: Adding pulse_repetition_pio [altera_avalon_pio 24.1]
+Progress: Parameterizing module pulse_repetition_pio
 Progress: Adding pulse_start_pio [altera_avalon_pio 24.1]
 Progress: Parameterizing module pulse_start_pio
 Progress: Adding pulse_width_pio [altera_avalon_pio 24.1]
@@ -43,6 +45,8 @@ Progress: Adding pll_0 [altera_pll 24.1]
 Progress: Parameterizing module pll_0
 Progress: Adding pulse_delay_pio [altera_avalon_pio 24.1]
 Progress: Parameterizing module pulse_delay_pio
+Progress: Adding pulse_repetition_pio [altera_avalon_pio 24.1]
+Progress: Parameterizing module pulse_repetition_pio
 Progress: Adding pulse_start_pio [altera_avalon_pio 24.1]
 Progress: Parameterizing module pulse_start_pio
 Progress: Adding pulse_width_pio [altera_avalon_pio 24.1]
@@ -68,11 +72,11 @@ Info: hps_0: "soc_system" instantiated altera_hps "hps_0"
 Info: mm_bridge_0: "soc_system" instantiated altera_avalon_mm_bridge "mm_bridge_0"
 Info: pll_0: "soc_system" instantiated altera_pll "pll_0"
 Info: pulse_delay_pio: Starting RTL generation for module 'soc_system_pulse_delay_pio'
-Info: pulse_delay_pio:   Generation command is [exec /home/daeyoung/intelFPGA_lite/24.1std/quartus/linux64/perl/bin/perl -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/linux64/perl/lib -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/sopc_builder/bin/europa -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/sopc_builder/bin -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/common -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_pulse_delay_pio --dir=/tmp/alt0203_7978096199738189410.dir/0024_pulse_delay_pio_gen/ --quartus_dir=/home/daeyoung/intelFPGA_lite/24.1std/quartus --verilog --config=/tmp/alt0203_7978096199738189410.dir/0024_pulse_delay_pio_gen//soc_system_pulse_delay_pio_component_configuration.pl  --do_build_sim=0  ]
+Info: pulse_delay_pio:   Generation command is [exec /home/daeyoung/intelFPGA_lite/24.1std/quartus/linux64/perl/bin/perl -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/linux64/perl/lib -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/sopc_builder/bin/europa -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/sopc_builder/bin -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/common -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_pulse_delay_pio --dir=/tmp/alt0205_7645218585918970545.dir/0004_pulse_delay_pio_gen/ --quartus_dir=/home/daeyoung/intelFPGA_lite/24.1std/quartus --verilog --config=/tmp/alt0205_7645218585918970545.dir/0004_pulse_delay_pio_gen//soc_system_pulse_delay_pio_component_configuration.pl  --do_build_sim=0  ]
 Info: pulse_delay_pio: Done RTL generation for module 'soc_system_pulse_delay_pio'
 Info: pulse_delay_pio: "soc_system" instantiated altera_avalon_pio "pulse_delay_pio"
 Info: pulse_start_pio: Starting RTL generation for module 'soc_system_pulse_start_pio'
-Info: pulse_start_pio:   Generation command is [exec /home/daeyoung/intelFPGA_lite/24.1std/quartus/linux64/perl/bin/perl -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/linux64/perl/lib -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/sopc_builder/bin/europa -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/sopc_builder/bin -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/common -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_pulse_start_pio --dir=/tmp/alt0203_7978096199738189410.dir/0025_pulse_start_pio_gen/ --quartus_dir=/home/daeyoung/intelFPGA_lite/24.1std/quartus --verilog --config=/tmp/alt0203_7978096199738189410.dir/0025_pulse_start_pio_gen//soc_system_pulse_start_pio_component_configuration.pl  --do_build_sim=0  ]
+Info: pulse_start_pio:   Generation command is [exec /home/daeyoung/intelFPGA_lite/24.1std/quartus/linux64/perl/bin/perl -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/linux64/perl/lib -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/sopc_builder/bin/europa -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/sopc_builder/bin -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/common -I /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/daeyoung/intelFPGA_lite/24.1std/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=soc_system_pulse_start_pio --dir=/tmp/alt0205_7645218585918970545.dir/0005_pulse_start_pio_gen/ --quartus_dir=/home/daeyoung/intelFPGA_lite/24.1std/quartus --verilog --config=/tmp/alt0205_7645218585918970545.dir/0005_pulse_start_pio_gen//soc_system_pulse_start_pio_component_configuration.pl  --do_build_sim=0  ]
 Info: pulse_start_pio: Done RTL generation for module 'soc_system_pulse_start_pio'
 Info: pulse_start_pio: "soc_system" instantiated altera_avalon_pio "pulse_start_pio"
 Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
@@ -80,6 +84,7 @@ Info: mm_interconnect_0: "soc_system" instantiated altera_mm_interconnect "mm_in
 Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
 Info: mm_interconnect_1: "soc_system" instantiated altera_mm_interconnect "mm_interconnect_1"
 Info: rst_controller: "soc_system" instantiated altera_reset_controller "rst_controller"
 Info: fpga_interfaces: "hps_0" instantiated altera_interface_generator "fpga_interfaces"

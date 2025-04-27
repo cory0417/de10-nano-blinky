@@ -23,6 +23,7 @@ module soc_system (
 	pll_0_refclk_clk,
 	pll_0_reset_reset,
 	pulse_delay_pio_export,
+	pulse_repetition_pio_export,
 	pulse_start_pio_export,
 	pulse_width_pio_export,
 	reset_reset_n);	
@@ -50,6 +51,7 @@ module soc_system (
 	input		pll_0_refclk_clk;
 	input		pll_0_reset_reset;
 	output	[31:0]	pulse_delay_pio_export;
+	output	[31:0]	pulse_repetition_pio_export;
 	output		pulse_start_pio_export;
 	output	[31:0]	pulse_width_pio_export;
 	input		reset_reset_n;

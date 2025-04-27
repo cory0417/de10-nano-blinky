@@ -66,35 +66,56 @@ module pulse_generator (
       counter <= 32'd0;
       repetition_counter <= 16'd0;
       start_ack <= 1'b0;
-    end else begin
-      case (state)
-        IDLE: begin
-          if (start_in) begin
-            counter <= delay_cycles;
+    end else if (start_in) begin
+      if (start_in) begin
+        if (delay_cycles > 0) begin
+          repetition_counter <= repetition;
+          counter <= delay_cycles;
+          state <= DELAY;
+        end else begin
+          if (pulse_width_cycles > 0) begin
             repetition_counter <= repetition;
-            state <= DELAY;
-            start_ack <= 1'b1;  // Acknowledge start
+            counter <= pulse_width_cycles;
+            state <= PULSE;
+          end else begin
+            state <= IDLE;  // No pulse to generate
           end
         end
-
+        start_ack <= 1'b1;  // Acknowledge start
+      end else begin
+        start_ack <= 1'b0;  // Clear start_ack when in IDLE
+      end
+    end else begin
+      case (state)
+        IDLE: state <= IDLE;  // No pulse to generate
         DELAY: begin
           start_ack <= 1'b0;  // Clear start_ack when in DELAY
           if (counter == 32'd1) begin
-            counter <= pulse_width_cycles;
-            state   <= PULSE;
+            if (pulse_width_cycles > 0) begin
+              counter <= pulse_width_cycles;
+              state   <= PULSE;
+            end else begin
+              state <= IDLE;  // No pulse to generate
+            end
           end else begin
             counter <= counter - 32'd1;
           end
         end
 
         PULSE: begin
+          start_ack <= 1'b0;  // Clear start_ack when in DELAY
           if (counter == 32'd1) begin
             if (is_last_repetition) begin
               state <= IDLE;
               repetition_counter <= 16'd0;
             end else begin
-              counter <= delay_cycles;
-              state   <= DELAY;
+              if (delay_cycles > 0) begin
+                counter <= delay_cycles;
+                state   <= DELAY;
+              end else begin
+                counter <= pulse_width_cycles;
+                state   <= PULSE;
+              end
               if (repetition_counter > 0) repetition_counter <= repetition_counter - 1;
             end
           end else begin
@@ -123,19 +144,17 @@ module pulse_generator_pio (
     output logic        delay_led
 );
 
-  logic req_ff0, req_ff1, start_edge;
+  logic req_ff, start_edge;
 
   always_ff @(posedge clk or negedge reset_n) begin
     if (!reset_n) begin
-      req_ff0 <= 0;
-      req_ff1 <= 0;
+      req_ff <= 0;
     end else begin
-      req_ff0 <= start_pio;  // PIO from CPU
-      req_ff1 <= req_ff0;
+      req_ff <= start_pio;  // PIO from CPU
     end
   end
 
-  assign start_edge = start_pio & ~req_ff0;  // one-cycle pulse
+  assign start_edge = start_pio & ~req_ff;  // one-cycle pulse
 
   // Instantiate the pulse generator module
   pulse_generator u_pulse_generator (

@@ -62,6 +62,8 @@ int main(int argc, char **argv)
     *((volatile uint32_t *)pulse_width_cycles_map) = pulse_width_cycles;
     *((volatile uint32_t *)pulse_repetition_map) = pulse_repetition;
     *((volatile uint32_t *)start_map) = 1;
+    usleep(1);
+    *((volatile uint32_t *)start_map) = 0;
     printf("Pulse generator started.\n");
     printf("Delay cycles: %d\n", delay_cycles);
     printf("Pulse width cycles: %d\n", pulse_width_cycles);

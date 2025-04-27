@@ -109,6 +109,30 @@
 #define PULSE_START_PIO_RESET_VALUE 0
 
 /*
+ * Macros for device 'pulse_repetition_pio', class 'altera_avalon_pio'
+ * The macros are prefixed with 'PULSE_REPETITION_PIO_'.
+ * The prefix is the slave descriptor.
+ */
+#define PULSE_REPETITION_PIO_COMPONENT_TYPE altera_avalon_pio
+#define PULSE_REPETITION_PIO_COMPONENT_NAME pulse_repetition_pio
+#define PULSE_REPETITION_PIO_BASE 0xc0000030
+#define PULSE_REPETITION_PIO_SPAN 16
+#define PULSE_REPETITION_PIO_END 0xc000003f
+#define PULSE_REPETITION_PIO_BIT_CLEARING_EDGE_REGISTER 0
+#define PULSE_REPETITION_PIO_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define PULSE_REPETITION_PIO_CAPTURE 0
+#define PULSE_REPETITION_PIO_DATA_WIDTH 32
+#define PULSE_REPETITION_PIO_DO_TEST_BENCH_WIRING 0
+#define PULSE_REPETITION_PIO_DRIVEN_SIM_VALUE 0
+#define PULSE_REPETITION_PIO_EDGE_TYPE NONE
+#define PULSE_REPETITION_PIO_FREQ 50000000
+#define PULSE_REPETITION_PIO_HAS_IN 0
+#define PULSE_REPETITION_PIO_HAS_OUT 1
+#define PULSE_REPETITION_PIO_HAS_TRI 0
+#define PULSE_REPETITION_PIO_IRQ_TYPE NONE
+#define PULSE_REPETITION_PIO_RESET_VALUE 0
+
+/*
  * Macros for device 'hps_0_gmac0', class 'stmmac'
  * The macros are prefixed with 'HPS_0_GMAC0_'.
  * The prefix is the slave descriptor.
