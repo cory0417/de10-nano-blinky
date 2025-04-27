@@ -8,6 +8,7 @@ module pulse_generator_tb;
   logic start;
   logic [31:0] delay_cycles;
   logic [31:0] pulse_width_cycles;
+  logic [9:0] repetition;
 
   // Outputs
   logic pulse_out;
@@ -21,6 +22,7 @@ module pulse_generator_tb;
       .start(start),
       .delay_cycles(delay_cycles),
       .pulse_width_cycles(pulse_width_cycles),
+      .repetition(repetition),
       .pulse_out(pulse_out),
       .pulse_led(pulse_led),
       .delay_led(delay_led)
@@ -38,6 +40,7 @@ module pulse_generator_tb;
     start = 0;
     delay_cycles = 0;
     pulse_width_cycles = 0;
+    repetition = 0;
 
     $display("Starting test...");
     $dumpfile("pulse_generator_tb.vcd");
@@ -49,6 +52,7 @@ module pulse_generator_tb;
     // Set delay and pulse width
     delay_cycles       = 10;  // 10 clock cycles = 200ns
     pulse_width_cycles = 20;  // 20 clock cycles = 400ns
+    repetition         = 3;  // 3 repetitions
 
     // Wait a few clocks
     #100;
@@ -59,7 +63,14 @@ module pulse_generator_tb;
     start = 0;
 
     // Wait long enough to observe the pulse
+    #2000;
+    assert (uut.state == uut.IDLE);
+    repetition = 0;  // Go infinite loop
+    start = 1;
+    #20;
+    start = 0;
     #1000;
+    assert (uut.is_last_repetition == 1'b0);
 
     $display("Test finished.");
     $finish;
