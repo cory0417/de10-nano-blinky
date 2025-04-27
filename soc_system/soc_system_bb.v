@@ -1,11 +1,8 @@
 
 module soc_system (
-	button_pio_external_connection_export,
 	clk_clk,
-	dipsw_pio_external_connection_export,
 	fpga_clk_pll_100_clk,
 	hps_0_h2f_reset_reset_n,
-	led_pio_external_connection_export,
 	memory_mem_a,
 	memory_mem_ba,
 	memory_mem_ck,
@@ -23,18 +20,16 @@ module soc_system (
 	memory_mem_dm,
 	memory_oct_rzqin,
 	pll_0_locked_export,
+	pll_0_refclk_clk,
+	pll_0_reset_reset,
 	pulse_delay_pio_export,
 	pulse_start_pio_export,
 	pulse_width_pio_export,
-	reset_reset_n,
-	pll_0_refclk_clk);	
+	reset_reset_n);	
 
-	input	[1:0]	button_pio_external_connection_export;
 	input		clk_clk;
-	input	[3:0]	dipsw_pio_external_connection_export;
 	output		fpga_clk_pll_100_clk;
 	output		hps_0_h2f_reset_reset_n;
-	output	[5:0]	led_pio_external_connection_export;
 	output	[14:0]	memory_mem_a;
 	output	[2:0]	memory_mem_ba;
 	output		memory_mem_ck;
@@ -52,9 +47,10 @@ module soc_system (
 	output	[3:0]	memory_mem_dm;
 	input		memory_oct_rzqin;
 	output		pll_0_locked_export;
+	input		pll_0_refclk_clk;
+	input		pll_0_reset_reset;
 	output	[31:0]	pulse_delay_pio_export;
 	output		pulse_start_pio_export;
 	output	[31:0]	pulse_width_pio_export;
 	input		reset_reset_n;
-	input		pll_0_refclk_clk;
 endmodule
