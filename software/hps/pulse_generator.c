@@ -7,19 +7,19 @@
 #include <unistd.h>
 #include "hps_0.h"
 
-#define HPS2FPGASLAVES 0xFF200000
-#define BRIDGE_SPAN 0x6000
+#define HPS2FPGASLAVES 0xC0000000UL
+#define BRIDGE_SPAN 0x6000UL
 
 int main(int argc, char **argv)
 {
     uint32_t delay_cycles = 0;
     uint32_t pulse_width_cycles = 0;
 
-    uint8_t *start_map = NULL;
-    uint8_t *delay_cycles_map = NULL;
-    uint8_t *pulse_width_cycles_map = NULL;
+    void *start_map = NULL;
+    void *delay_cycles_map = NULL;
+    void *pulse_width_cycles_map = NULL;
 
-    uint8_t *bridge_map = NULL;
+    void *bridge_map = NULL;
 
     int fd = 0;
     int result = 0;
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     }
 
     printf("Trying to map");
-    bridge_map = (uint8_t *)mmap(NULL, BRIDGE_SPAN, PROT_READ | PROT_WRITE, MAP_SHARED, fd, HPS2FPGASLAVES);
+    bridge_map = mmap(NULL, BRIDGE_SPAN, PROT_READ | PROT_WRITE, MAP_SHARED, fd, HPS2FPGASLAVES);
     printf("Done mapping");
     if (bridge_map == MAP_FAILED)
     {
@@ -50,13 +50,13 @@ int main(int argc, char **argv)
         return -3;
     }
     printf("Trying to write");
-    start_map = bridge_map + PULSE_START_PIO_BASE;
-    delay_cycles_map = bridge_map + PULSE_DELAY_PIO_BASE;
-    pulse_width_cycles_map = bridge_map + PULSE_WIDTH_PIO_BASE;
-    *((uint8_t *)start_map) = 0;
+    start_map = bridge_map + (unsigned long)PULSE_START_PIO_BASE;
+    delay_cycles_map = bridge_map + (unsigned long)PULSE_DELAY_PIO_BASE;
+    pulse_width_cycles_map = bridge_map + (unsigned long)PULSE_WIDTH_PIO_BASE;
+    *((uint32_t *)start_map) = 0;
     *((uint32_t *)delay_cycles_map) = delay_cycles;
     *((uint32_t *)pulse_width_cycles_map) = pulse_width_cycles;
-    *((uint8_t *)start_map) = 1;
+    *((uint32_t *)start_map) = 1;
     printf("Pulse generator started.\n");
     printf("Delay cycles: %d\n", delay_cycles);
     printf("Pulse width cycles: %d\n", pulse_width_cycles);
