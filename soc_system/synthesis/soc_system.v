@@ -4,107 +4,113 @@
 
 `timescale 1 ps / 1 ps
 module soc_system (
-		input  wire        clk_clk,                 //              clk.clk
-		output wire        fpga_clk_pll_100_clk,    // fpga_clk_pll_100.clk
-		output wire        hps_0_h2f_reset_reset_n, //  hps_0_h2f_reset.reset_n
-		output wire [14:0] memory_mem_a,            //           memory.mem_a
-		output wire [2:0]  memory_mem_ba,           //                 .mem_ba
-		output wire        memory_mem_ck,           //                 .mem_ck
-		output wire        memory_mem_ck_n,         //                 .mem_ck_n
-		output wire        memory_mem_cke,          //                 .mem_cke
-		output wire        memory_mem_cs_n,         //                 .mem_cs_n
-		output wire        memory_mem_ras_n,        //                 .mem_ras_n
-		output wire        memory_mem_cas_n,        //                 .mem_cas_n
-		output wire        memory_mem_we_n,         //                 .mem_we_n
-		output wire        memory_mem_reset_n,      //                 .mem_reset_n
-		inout  wire [31:0] memory_mem_dq,           //                 .mem_dq
-		inout  wire [3:0]  memory_mem_dqs,          //                 .mem_dqs
-		inout  wire [3:0]  memory_mem_dqs_n,        //                 .mem_dqs_n
-		output wire        memory_mem_odt,          //                 .mem_odt
-		output wire [3:0]  memory_mem_dm,           //                 .mem_dm
-		input  wire        memory_oct_rzqin,        //                 .oct_rzqin
-		output wire        pll_0_locked_export,     //     pll_0_locked.export
-		input  wire        pll_0_refclk_clk,        //     pll_0_refclk.clk
-		input  wire        pll_0_reset_reset,       //      pll_0_reset.reset
-		output wire [31:0] pulse_delay_pio_export,  //  pulse_delay_pio.export
-		output wire        pulse_start_pio_export,  //  pulse_start_pio.export
-		output wire [31:0] pulse_width_pio_export,  //  pulse_width_pio.export
-		input  wire        reset_reset_n            //            reset.reset_n
+		input  wire        clk_clk,                     //                  clk.clk
+		output wire        fpga_clk_pll_100_clk,        //     fpga_clk_pll_100.clk
+		output wire        hps_0_h2f_reset_reset_n,     //      hps_0_h2f_reset.reset_n
+		output wire [14:0] memory_mem_a,                //               memory.mem_a
+		output wire [2:0]  memory_mem_ba,               //                     .mem_ba
+		output wire        memory_mem_ck,               //                     .mem_ck
+		output wire        memory_mem_ck_n,             //                     .mem_ck_n
+		output wire        memory_mem_cke,              //                     .mem_cke
+		output wire        memory_mem_cs_n,             //                     .mem_cs_n
+		output wire        memory_mem_ras_n,            //                     .mem_ras_n
+		output wire        memory_mem_cas_n,            //                     .mem_cas_n
+		output wire        memory_mem_we_n,             //                     .mem_we_n
+		output wire        memory_mem_reset_n,          //                     .mem_reset_n
+		inout  wire [31:0] memory_mem_dq,               //                     .mem_dq
+		inout  wire [3:0]  memory_mem_dqs,              //                     .mem_dqs
+		inout  wire [3:0]  memory_mem_dqs_n,            //                     .mem_dqs_n
+		output wire        memory_mem_odt,              //                     .mem_odt
+		output wire [3:0]  memory_mem_dm,               //                     .mem_dm
+		input  wire        memory_oct_rzqin,            //                     .oct_rzqin
+		output wire        pll_0_locked_export,         //         pll_0_locked.export
+		input  wire        pll_0_refclk_clk,            //         pll_0_refclk.clk
+		input  wire        pll_0_reset_reset,           //          pll_0_reset.reset
+		output wire [31:0] pulse_delay_pio_export,      //      pulse_delay_pio.export
+		output wire [31:0] pulse_repetition_pio_export, // pulse_repetition_pio.export
+		output wire        pulse_start_pio_export,      //      pulse_start_pio.export
+		output wire [31:0] pulse_width_pio_export,      //      pulse_width_pio.export
+		input  wire        reset_reset_n                //                reset.reset_n
 	);
 
-	wire   [1:0] hps_0_h2f_axi_master_awburst;                    // hps_0:h2f_AWBURST -> mm_interconnect_0:hps_0_h2f_axi_master_awburst
-	wire   [3:0] hps_0_h2f_axi_master_arlen;                      // hps_0:h2f_ARLEN -> mm_interconnect_0:hps_0_h2f_axi_master_arlen
-	wire   [3:0] hps_0_h2f_axi_master_wstrb;                      // hps_0:h2f_WSTRB -> mm_interconnect_0:hps_0_h2f_axi_master_wstrb
-	wire         hps_0_h2f_axi_master_wready;                     // mm_interconnect_0:hps_0_h2f_axi_master_wready -> hps_0:h2f_WREADY
-	wire  [11:0] hps_0_h2f_axi_master_rid;                        // mm_interconnect_0:hps_0_h2f_axi_master_rid -> hps_0:h2f_RID
-	wire         hps_0_h2f_axi_master_rready;                     // hps_0:h2f_RREADY -> mm_interconnect_0:hps_0_h2f_axi_master_rready
-	wire   [3:0] hps_0_h2f_axi_master_awlen;                      // hps_0:h2f_AWLEN -> mm_interconnect_0:hps_0_h2f_axi_master_awlen
-	wire  [11:0] hps_0_h2f_axi_master_wid;                        // hps_0:h2f_WID -> mm_interconnect_0:hps_0_h2f_axi_master_wid
-	wire   [3:0] hps_0_h2f_axi_master_arcache;                    // hps_0:h2f_ARCACHE -> mm_interconnect_0:hps_0_h2f_axi_master_arcache
-	wire         hps_0_h2f_axi_master_wvalid;                     // hps_0:h2f_WVALID -> mm_interconnect_0:hps_0_h2f_axi_master_wvalid
-	wire  [29:0] hps_0_h2f_axi_master_araddr;                     // hps_0:h2f_ARADDR -> mm_interconnect_0:hps_0_h2f_axi_master_araddr
-	wire   [2:0] hps_0_h2f_axi_master_arprot;                     // hps_0:h2f_ARPROT -> mm_interconnect_0:hps_0_h2f_axi_master_arprot
-	wire   [2:0] hps_0_h2f_axi_master_awprot;                     // hps_0:h2f_AWPROT -> mm_interconnect_0:hps_0_h2f_axi_master_awprot
-	wire  [31:0] hps_0_h2f_axi_master_wdata;                      // hps_0:h2f_WDATA -> mm_interconnect_0:hps_0_h2f_axi_master_wdata
-	wire         hps_0_h2f_axi_master_arvalid;                    // hps_0:h2f_ARVALID -> mm_interconnect_0:hps_0_h2f_axi_master_arvalid
-	wire   [3:0] hps_0_h2f_axi_master_awcache;                    // hps_0:h2f_AWCACHE -> mm_interconnect_0:hps_0_h2f_axi_master_awcache
-	wire  [11:0] hps_0_h2f_axi_master_arid;                       // hps_0:h2f_ARID -> mm_interconnect_0:hps_0_h2f_axi_master_arid
-	wire   [1:0] hps_0_h2f_axi_master_arlock;                     // hps_0:h2f_ARLOCK -> mm_interconnect_0:hps_0_h2f_axi_master_arlock
-	wire   [1:0] hps_0_h2f_axi_master_awlock;                     // hps_0:h2f_AWLOCK -> mm_interconnect_0:hps_0_h2f_axi_master_awlock
-	wire  [29:0] hps_0_h2f_axi_master_awaddr;                     // hps_0:h2f_AWADDR -> mm_interconnect_0:hps_0_h2f_axi_master_awaddr
-	wire   [1:0] hps_0_h2f_axi_master_bresp;                      // mm_interconnect_0:hps_0_h2f_axi_master_bresp -> hps_0:h2f_BRESP
-	wire         hps_0_h2f_axi_master_arready;                    // mm_interconnect_0:hps_0_h2f_axi_master_arready -> hps_0:h2f_ARREADY
-	wire  [31:0] hps_0_h2f_axi_master_rdata;                      // mm_interconnect_0:hps_0_h2f_axi_master_rdata -> hps_0:h2f_RDATA
-	wire         hps_0_h2f_axi_master_awready;                    // mm_interconnect_0:hps_0_h2f_axi_master_awready -> hps_0:h2f_AWREADY
-	wire   [1:0] hps_0_h2f_axi_master_arburst;                    // hps_0:h2f_ARBURST -> mm_interconnect_0:hps_0_h2f_axi_master_arburst
-	wire   [2:0] hps_0_h2f_axi_master_arsize;                     // hps_0:h2f_ARSIZE -> mm_interconnect_0:hps_0_h2f_axi_master_arsize
-	wire         hps_0_h2f_axi_master_bready;                     // hps_0:h2f_BREADY -> mm_interconnect_0:hps_0_h2f_axi_master_bready
-	wire         hps_0_h2f_axi_master_rlast;                      // mm_interconnect_0:hps_0_h2f_axi_master_rlast -> hps_0:h2f_RLAST
-	wire         hps_0_h2f_axi_master_wlast;                      // hps_0:h2f_WLAST -> mm_interconnect_0:hps_0_h2f_axi_master_wlast
-	wire   [1:0] hps_0_h2f_axi_master_rresp;                      // mm_interconnect_0:hps_0_h2f_axi_master_rresp -> hps_0:h2f_RRESP
-	wire  [11:0] hps_0_h2f_axi_master_awid;                       // hps_0:h2f_AWID -> mm_interconnect_0:hps_0_h2f_axi_master_awid
-	wire  [11:0] hps_0_h2f_axi_master_bid;                        // mm_interconnect_0:hps_0_h2f_axi_master_bid -> hps_0:h2f_BID
-	wire         hps_0_h2f_axi_master_bvalid;                     // mm_interconnect_0:hps_0_h2f_axi_master_bvalid -> hps_0:h2f_BVALID
-	wire   [2:0] hps_0_h2f_axi_master_awsize;                     // hps_0:h2f_AWSIZE -> mm_interconnect_0:hps_0_h2f_axi_master_awsize
-	wire         hps_0_h2f_axi_master_awvalid;                    // hps_0:h2f_AWVALID -> mm_interconnect_0:hps_0_h2f_axi_master_awvalid
-	wire         hps_0_h2f_axi_master_rvalid;                     // mm_interconnect_0:hps_0_h2f_axi_master_rvalid -> hps_0:h2f_RVALID
-	wire  [31:0] mm_interconnect_0_mm_bridge_0_s0_readdata;       // mm_bridge_0:s0_readdata -> mm_interconnect_0:mm_bridge_0_s0_readdata
-	wire         mm_interconnect_0_mm_bridge_0_s0_waitrequest;    // mm_bridge_0:s0_waitrequest -> mm_interconnect_0:mm_bridge_0_s0_waitrequest
-	wire         mm_interconnect_0_mm_bridge_0_s0_debugaccess;    // mm_interconnect_0:mm_bridge_0_s0_debugaccess -> mm_bridge_0:s0_debugaccess
-	wire   [5:0] mm_interconnect_0_mm_bridge_0_s0_address;        // mm_interconnect_0:mm_bridge_0_s0_address -> mm_bridge_0:s0_address
-	wire         mm_interconnect_0_mm_bridge_0_s0_read;           // mm_interconnect_0:mm_bridge_0_s0_read -> mm_bridge_0:s0_read
-	wire   [3:0] mm_interconnect_0_mm_bridge_0_s0_byteenable;     // mm_interconnect_0:mm_bridge_0_s0_byteenable -> mm_bridge_0:s0_byteenable
-	wire         mm_interconnect_0_mm_bridge_0_s0_readdatavalid;  // mm_bridge_0:s0_readdatavalid -> mm_interconnect_0:mm_bridge_0_s0_readdatavalid
-	wire         mm_interconnect_0_mm_bridge_0_s0_write;          // mm_interconnect_0:mm_bridge_0_s0_write -> mm_bridge_0:s0_write
-	wire  [31:0] mm_interconnect_0_mm_bridge_0_s0_writedata;      // mm_interconnect_0:mm_bridge_0_s0_writedata -> mm_bridge_0:s0_writedata
-	wire   [0:0] mm_interconnect_0_mm_bridge_0_s0_burstcount;     // mm_interconnect_0:mm_bridge_0_s0_burstcount -> mm_bridge_0:s0_burstcount
-	wire         mm_bridge_0_m0_waitrequest;                      // mm_interconnect_1:mm_bridge_0_m0_waitrequest -> mm_bridge_0:m0_waitrequest
-	wire  [31:0] mm_bridge_0_m0_readdata;                         // mm_interconnect_1:mm_bridge_0_m0_readdata -> mm_bridge_0:m0_readdata
-	wire         mm_bridge_0_m0_debugaccess;                      // mm_bridge_0:m0_debugaccess -> mm_interconnect_1:mm_bridge_0_m0_debugaccess
-	wire   [5:0] mm_bridge_0_m0_address;                          // mm_bridge_0:m0_address -> mm_interconnect_1:mm_bridge_0_m0_address
-	wire         mm_bridge_0_m0_read;                             // mm_bridge_0:m0_read -> mm_interconnect_1:mm_bridge_0_m0_read
-	wire   [3:0] mm_bridge_0_m0_byteenable;                       // mm_bridge_0:m0_byteenable -> mm_interconnect_1:mm_bridge_0_m0_byteenable
-	wire         mm_bridge_0_m0_readdatavalid;                    // mm_interconnect_1:mm_bridge_0_m0_readdatavalid -> mm_bridge_0:m0_readdatavalid
-	wire  [31:0] mm_bridge_0_m0_writedata;                        // mm_bridge_0:m0_writedata -> mm_interconnect_1:mm_bridge_0_m0_writedata
-	wire         mm_bridge_0_m0_write;                            // mm_bridge_0:m0_write -> mm_interconnect_1:mm_bridge_0_m0_write
-	wire   [0:0] mm_bridge_0_m0_burstcount;                       // mm_bridge_0:m0_burstcount -> mm_interconnect_1:mm_bridge_0_m0_burstcount
-	wire         mm_interconnect_1_pulse_start_pio_s1_chipselect; // mm_interconnect_1:pulse_start_pio_s1_chipselect -> pulse_start_pio:chipselect
-	wire  [31:0] mm_interconnect_1_pulse_start_pio_s1_readdata;   // pulse_start_pio:readdata -> mm_interconnect_1:pulse_start_pio_s1_readdata
-	wire   [1:0] mm_interconnect_1_pulse_start_pio_s1_address;    // mm_interconnect_1:pulse_start_pio_s1_address -> pulse_start_pio:address
-	wire         mm_interconnect_1_pulse_start_pio_s1_write;      // mm_interconnect_1:pulse_start_pio_s1_write -> pulse_start_pio:write_n
-	wire  [31:0] mm_interconnect_1_pulse_start_pio_s1_writedata;  // mm_interconnect_1:pulse_start_pio_s1_writedata -> pulse_start_pio:writedata
-	wire         mm_interconnect_1_pulse_delay_pio_s1_chipselect; // mm_interconnect_1:pulse_delay_pio_s1_chipselect -> pulse_delay_pio:chipselect
-	wire  [31:0] mm_interconnect_1_pulse_delay_pio_s1_readdata;   // pulse_delay_pio:readdata -> mm_interconnect_1:pulse_delay_pio_s1_readdata
-	wire   [1:0] mm_interconnect_1_pulse_delay_pio_s1_address;    // mm_interconnect_1:pulse_delay_pio_s1_address -> pulse_delay_pio:address
-	wire         mm_interconnect_1_pulse_delay_pio_s1_write;      // mm_interconnect_1:pulse_delay_pio_s1_write -> pulse_delay_pio:write_n
-	wire  [31:0] mm_interconnect_1_pulse_delay_pio_s1_writedata;  // mm_interconnect_1:pulse_delay_pio_s1_writedata -> pulse_delay_pio:writedata
-	wire         mm_interconnect_1_pulse_width_pio_s1_chipselect; // mm_interconnect_1:pulse_width_pio_s1_chipselect -> pulse_width_pio:chipselect
-	wire  [31:0] mm_interconnect_1_pulse_width_pio_s1_readdata;   // pulse_width_pio:readdata -> mm_interconnect_1:pulse_width_pio_s1_readdata
-	wire   [1:0] mm_interconnect_1_pulse_width_pio_s1_address;    // mm_interconnect_1:pulse_width_pio_s1_address -> pulse_width_pio:address
-	wire         mm_interconnect_1_pulse_width_pio_s1_write;      // mm_interconnect_1:pulse_width_pio_s1_write -> pulse_width_pio:write_n
-	wire  [31:0] mm_interconnect_1_pulse_width_pio_s1_writedata;  // mm_interconnect_1:pulse_width_pio_s1_writedata -> pulse_width_pio:writedata
-	wire         rst_controller_reset_out_reset;                  // rst_controller:reset_out -> [mm_bridge_0:reset, mm_interconnect_0:mm_bridge_0_reset_reset_bridge_in_reset_reset, mm_interconnect_1:mm_bridge_0_reset_reset_bridge_in_reset_reset, pulse_delay_pio:reset_n, pulse_start_pio:reset_n, pulse_width_pio:reset_n]
-	wire         rst_controller_001_reset_out_reset;              // rst_controller_001:reset_out -> mm_interconnect_0:hps_0_h2f_axi_master_agent_clk_reset_reset_bridge_in_reset_reset
+	wire   [1:0] hps_0_h2f_axi_master_awburst;                         // hps_0:h2f_AWBURST -> mm_interconnect_0:hps_0_h2f_axi_master_awburst
+	wire   [3:0] hps_0_h2f_axi_master_arlen;                           // hps_0:h2f_ARLEN -> mm_interconnect_0:hps_0_h2f_axi_master_arlen
+	wire   [3:0] hps_0_h2f_axi_master_wstrb;                           // hps_0:h2f_WSTRB -> mm_interconnect_0:hps_0_h2f_axi_master_wstrb
+	wire         hps_0_h2f_axi_master_wready;                          // mm_interconnect_0:hps_0_h2f_axi_master_wready -> hps_0:h2f_WREADY
+	wire  [11:0] hps_0_h2f_axi_master_rid;                             // mm_interconnect_0:hps_0_h2f_axi_master_rid -> hps_0:h2f_RID
+	wire         hps_0_h2f_axi_master_rready;                          // hps_0:h2f_RREADY -> mm_interconnect_0:hps_0_h2f_axi_master_rready
+	wire   [3:0] hps_0_h2f_axi_master_awlen;                           // hps_0:h2f_AWLEN -> mm_interconnect_0:hps_0_h2f_axi_master_awlen
+	wire  [11:0] hps_0_h2f_axi_master_wid;                             // hps_0:h2f_WID -> mm_interconnect_0:hps_0_h2f_axi_master_wid
+	wire   [3:0] hps_0_h2f_axi_master_arcache;                         // hps_0:h2f_ARCACHE -> mm_interconnect_0:hps_0_h2f_axi_master_arcache
+	wire         hps_0_h2f_axi_master_wvalid;                          // hps_0:h2f_WVALID -> mm_interconnect_0:hps_0_h2f_axi_master_wvalid
+	wire  [29:0] hps_0_h2f_axi_master_araddr;                          // hps_0:h2f_ARADDR -> mm_interconnect_0:hps_0_h2f_axi_master_araddr
+	wire   [2:0] hps_0_h2f_axi_master_arprot;                          // hps_0:h2f_ARPROT -> mm_interconnect_0:hps_0_h2f_axi_master_arprot
+	wire   [2:0] hps_0_h2f_axi_master_awprot;                          // hps_0:h2f_AWPROT -> mm_interconnect_0:hps_0_h2f_axi_master_awprot
+	wire  [31:0] hps_0_h2f_axi_master_wdata;                           // hps_0:h2f_WDATA -> mm_interconnect_0:hps_0_h2f_axi_master_wdata
+	wire         hps_0_h2f_axi_master_arvalid;                         // hps_0:h2f_ARVALID -> mm_interconnect_0:hps_0_h2f_axi_master_arvalid
+	wire   [3:0] hps_0_h2f_axi_master_awcache;                         // hps_0:h2f_AWCACHE -> mm_interconnect_0:hps_0_h2f_axi_master_awcache
+	wire  [11:0] hps_0_h2f_axi_master_arid;                            // hps_0:h2f_ARID -> mm_interconnect_0:hps_0_h2f_axi_master_arid
+	wire   [1:0] hps_0_h2f_axi_master_arlock;                          // hps_0:h2f_ARLOCK -> mm_interconnect_0:hps_0_h2f_axi_master_arlock
+	wire   [1:0] hps_0_h2f_axi_master_awlock;                          // hps_0:h2f_AWLOCK -> mm_interconnect_0:hps_0_h2f_axi_master_awlock
+	wire  [29:0] hps_0_h2f_axi_master_awaddr;                          // hps_0:h2f_AWADDR -> mm_interconnect_0:hps_0_h2f_axi_master_awaddr
+	wire   [1:0] hps_0_h2f_axi_master_bresp;                           // mm_interconnect_0:hps_0_h2f_axi_master_bresp -> hps_0:h2f_BRESP
+	wire         hps_0_h2f_axi_master_arready;                         // mm_interconnect_0:hps_0_h2f_axi_master_arready -> hps_0:h2f_ARREADY
+	wire  [31:0] hps_0_h2f_axi_master_rdata;                           // mm_interconnect_0:hps_0_h2f_axi_master_rdata -> hps_0:h2f_RDATA
+	wire         hps_0_h2f_axi_master_awready;                         // mm_interconnect_0:hps_0_h2f_axi_master_awready -> hps_0:h2f_AWREADY
+	wire   [1:0] hps_0_h2f_axi_master_arburst;                         // hps_0:h2f_ARBURST -> mm_interconnect_0:hps_0_h2f_axi_master_arburst
+	wire   [2:0] hps_0_h2f_axi_master_arsize;                          // hps_0:h2f_ARSIZE -> mm_interconnect_0:hps_0_h2f_axi_master_arsize
+	wire         hps_0_h2f_axi_master_bready;                          // hps_0:h2f_BREADY -> mm_interconnect_0:hps_0_h2f_axi_master_bready
+	wire         hps_0_h2f_axi_master_rlast;                           // mm_interconnect_0:hps_0_h2f_axi_master_rlast -> hps_0:h2f_RLAST
+	wire         hps_0_h2f_axi_master_wlast;                           // hps_0:h2f_WLAST -> mm_interconnect_0:hps_0_h2f_axi_master_wlast
+	wire   [1:0] hps_0_h2f_axi_master_rresp;                           // mm_interconnect_0:hps_0_h2f_axi_master_rresp -> hps_0:h2f_RRESP
+	wire  [11:0] hps_0_h2f_axi_master_awid;                            // hps_0:h2f_AWID -> mm_interconnect_0:hps_0_h2f_axi_master_awid
+	wire  [11:0] hps_0_h2f_axi_master_bid;                             // mm_interconnect_0:hps_0_h2f_axi_master_bid -> hps_0:h2f_BID
+	wire         hps_0_h2f_axi_master_bvalid;                          // mm_interconnect_0:hps_0_h2f_axi_master_bvalid -> hps_0:h2f_BVALID
+	wire   [2:0] hps_0_h2f_axi_master_awsize;                          // hps_0:h2f_AWSIZE -> mm_interconnect_0:hps_0_h2f_axi_master_awsize
+	wire         hps_0_h2f_axi_master_awvalid;                         // hps_0:h2f_AWVALID -> mm_interconnect_0:hps_0_h2f_axi_master_awvalid
+	wire         hps_0_h2f_axi_master_rvalid;                          // mm_interconnect_0:hps_0_h2f_axi_master_rvalid -> hps_0:h2f_RVALID
+	wire  [31:0] mm_interconnect_0_mm_bridge_0_s0_readdata;            // mm_bridge_0:s0_readdata -> mm_interconnect_0:mm_bridge_0_s0_readdata
+	wire         mm_interconnect_0_mm_bridge_0_s0_waitrequest;         // mm_bridge_0:s0_waitrequest -> mm_interconnect_0:mm_bridge_0_s0_waitrequest
+	wire         mm_interconnect_0_mm_bridge_0_s0_debugaccess;         // mm_interconnect_0:mm_bridge_0_s0_debugaccess -> mm_bridge_0:s0_debugaccess
+	wire   [5:0] mm_interconnect_0_mm_bridge_0_s0_address;             // mm_interconnect_0:mm_bridge_0_s0_address -> mm_bridge_0:s0_address
+	wire         mm_interconnect_0_mm_bridge_0_s0_read;                // mm_interconnect_0:mm_bridge_0_s0_read -> mm_bridge_0:s0_read
+	wire   [3:0] mm_interconnect_0_mm_bridge_0_s0_byteenable;          // mm_interconnect_0:mm_bridge_0_s0_byteenable -> mm_bridge_0:s0_byteenable
+	wire         mm_interconnect_0_mm_bridge_0_s0_readdatavalid;       // mm_bridge_0:s0_readdatavalid -> mm_interconnect_0:mm_bridge_0_s0_readdatavalid
+	wire         mm_interconnect_0_mm_bridge_0_s0_write;               // mm_interconnect_0:mm_bridge_0_s0_write -> mm_bridge_0:s0_write
+	wire  [31:0] mm_interconnect_0_mm_bridge_0_s0_writedata;           // mm_interconnect_0:mm_bridge_0_s0_writedata -> mm_bridge_0:s0_writedata
+	wire   [0:0] mm_interconnect_0_mm_bridge_0_s0_burstcount;          // mm_interconnect_0:mm_bridge_0_s0_burstcount -> mm_bridge_0:s0_burstcount
+	wire         mm_bridge_0_m0_waitrequest;                           // mm_interconnect_1:mm_bridge_0_m0_waitrequest -> mm_bridge_0:m0_waitrequest
+	wire  [31:0] mm_bridge_0_m0_readdata;                              // mm_interconnect_1:mm_bridge_0_m0_readdata -> mm_bridge_0:m0_readdata
+	wire         mm_bridge_0_m0_debugaccess;                           // mm_bridge_0:m0_debugaccess -> mm_interconnect_1:mm_bridge_0_m0_debugaccess
+	wire   [5:0] mm_bridge_0_m0_address;                               // mm_bridge_0:m0_address -> mm_interconnect_1:mm_bridge_0_m0_address
+	wire         mm_bridge_0_m0_read;                                  // mm_bridge_0:m0_read -> mm_interconnect_1:mm_bridge_0_m0_read
+	wire   [3:0] mm_bridge_0_m0_byteenable;                            // mm_bridge_0:m0_byteenable -> mm_interconnect_1:mm_bridge_0_m0_byteenable
+	wire         mm_bridge_0_m0_readdatavalid;                         // mm_interconnect_1:mm_bridge_0_m0_readdatavalid -> mm_bridge_0:m0_readdatavalid
+	wire  [31:0] mm_bridge_0_m0_writedata;                             // mm_bridge_0:m0_writedata -> mm_interconnect_1:mm_bridge_0_m0_writedata
+	wire         mm_bridge_0_m0_write;                                 // mm_bridge_0:m0_write -> mm_interconnect_1:mm_bridge_0_m0_write
+	wire   [0:0] mm_bridge_0_m0_burstcount;                            // mm_bridge_0:m0_burstcount -> mm_interconnect_1:mm_bridge_0_m0_burstcount
+	wire         mm_interconnect_1_pulse_start_pio_s1_chipselect;      // mm_interconnect_1:pulse_start_pio_s1_chipselect -> pulse_start_pio:chipselect
+	wire  [31:0] mm_interconnect_1_pulse_start_pio_s1_readdata;        // pulse_start_pio:readdata -> mm_interconnect_1:pulse_start_pio_s1_readdata
+	wire   [1:0] mm_interconnect_1_pulse_start_pio_s1_address;         // mm_interconnect_1:pulse_start_pio_s1_address -> pulse_start_pio:address
+	wire         mm_interconnect_1_pulse_start_pio_s1_write;           // mm_interconnect_1:pulse_start_pio_s1_write -> pulse_start_pio:write_n
+	wire  [31:0] mm_interconnect_1_pulse_start_pio_s1_writedata;       // mm_interconnect_1:pulse_start_pio_s1_writedata -> pulse_start_pio:writedata
+	wire         mm_interconnect_1_pulse_delay_pio_s1_chipselect;      // mm_interconnect_1:pulse_delay_pio_s1_chipselect -> pulse_delay_pio:chipselect
+	wire  [31:0] mm_interconnect_1_pulse_delay_pio_s1_readdata;        // pulse_delay_pio:readdata -> mm_interconnect_1:pulse_delay_pio_s1_readdata
+	wire   [1:0] mm_interconnect_1_pulse_delay_pio_s1_address;         // mm_interconnect_1:pulse_delay_pio_s1_address -> pulse_delay_pio:address
+	wire         mm_interconnect_1_pulse_delay_pio_s1_write;           // mm_interconnect_1:pulse_delay_pio_s1_write -> pulse_delay_pio:write_n
+	wire  [31:0] mm_interconnect_1_pulse_delay_pio_s1_writedata;       // mm_interconnect_1:pulse_delay_pio_s1_writedata -> pulse_delay_pio:writedata
+	wire         mm_interconnect_1_pulse_width_pio_s1_chipselect;      // mm_interconnect_1:pulse_width_pio_s1_chipselect -> pulse_width_pio:chipselect
+	wire  [31:0] mm_interconnect_1_pulse_width_pio_s1_readdata;        // pulse_width_pio:readdata -> mm_interconnect_1:pulse_width_pio_s1_readdata
+	wire   [1:0] mm_interconnect_1_pulse_width_pio_s1_address;         // mm_interconnect_1:pulse_width_pio_s1_address -> pulse_width_pio:address
+	wire         mm_interconnect_1_pulse_width_pio_s1_write;           // mm_interconnect_1:pulse_width_pio_s1_write -> pulse_width_pio:write_n
+	wire  [31:0] mm_interconnect_1_pulse_width_pio_s1_writedata;       // mm_interconnect_1:pulse_width_pio_s1_writedata -> pulse_width_pio:writedata
+	wire         mm_interconnect_1_pulse_repetition_pio_s1_chipselect; // mm_interconnect_1:pulse_repetition_pio_s1_chipselect -> pulse_repetition_pio:chipselect
+	wire  [31:0] mm_interconnect_1_pulse_repetition_pio_s1_readdata;   // pulse_repetition_pio:readdata -> mm_interconnect_1:pulse_repetition_pio_s1_readdata
+	wire   [1:0] mm_interconnect_1_pulse_repetition_pio_s1_address;    // mm_interconnect_1:pulse_repetition_pio_s1_address -> pulse_repetition_pio:address
+	wire         mm_interconnect_1_pulse_repetition_pio_s1_write;      // mm_interconnect_1:pulse_repetition_pio_s1_write -> pulse_repetition_pio:write_n
+	wire  [31:0] mm_interconnect_1_pulse_repetition_pio_s1_writedata;  // mm_interconnect_1:pulse_repetition_pio_s1_writedata -> pulse_repetition_pio:writedata
+	wire         rst_controller_reset_out_reset;                       // rst_controller:reset_out -> [mm_bridge_0:reset, mm_interconnect_0:mm_bridge_0_reset_reset_bridge_in_reset_reset, mm_interconnect_1:mm_bridge_0_reset_reset_bridge_in_reset_reset, pulse_delay_pio:reset_n, pulse_repetition_pio:reset_n, pulse_start_pio:reset_n, pulse_width_pio:reset_n]
+	wire         rst_controller_001_reset_out_reset;                   // rst_controller_001:reset_out -> mm_interconnect_0:hps_0_h2f_axi_master_agent_clk_reset_reset_bridge_in_reset_reset
 
 	soc_system_hps_0 #(
 		.F2S_Width (0),
@@ -218,6 +224,17 @@ module soc_system (
 		.out_port   (pulse_delay_pio_export)                           // external_connection.export
 	);
 
+	soc_system_pulse_delay_pio pulse_repetition_pio (
+		.clk        (clk_clk),                                              //                 clk.clk
+		.reset_n    (~rst_controller_reset_out_reset),                      //               reset.reset_n
+		.address    (mm_interconnect_1_pulse_repetition_pio_s1_address),    //                  s1.address
+		.write_n    (~mm_interconnect_1_pulse_repetition_pio_s1_write),     //                    .write_n
+		.writedata  (mm_interconnect_1_pulse_repetition_pio_s1_writedata),  //                    .writedata
+		.chipselect (mm_interconnect_1_pulse_repetition_pio_s1_chipselect), //                    .chipselect
+		.readdata   (mm_interconnect_1_pulse_repetition_pio_s1_readdata),   //                    .readdata
+		.out_port   (pulse_repetition_pio_export)                           // external_connection.export
+	);
+
 	soc_system_pulse_start_pio pulse_start_pio (
 		.clk        (clk_clk),                                         //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),                 //               reset.reset_n
@@ -293,33 +310,38 @@ module soc_system (
 	);
 
 	soc_system_mm_interconnect_1 mm_interconnect_1 (
-		.clk_0_clk_clk                                 (clk_clk),                                         //                               clk_0_clk.clk
-		.mm_bridge_0_reset_reset_bridge_in_reset_reset (rst_controller_reset_out_reset),                  // mm_bridge_0_reset_reset_bridge_in_reset.reset
-		.mm_bridge_0_m0_address                        (mm_bridge_0_m0_address),                          //                          mm_bridge_0_m0.address
-		.mm_bridge_0_m0_waitrequest                    (mm_bridge_0_m0_waitrequest),                      //                                        .waitrequest
-		.mm_bridge_0_m0_burstcount                     (mm_bridge_0_m0_burstcount),                       //                                        .burstcount
-		.mm_bridge_0_m0_byteenable                     (mm_bridge_0_m0_byteenable),                       //                                        .byteenable
-		.mm_bridge_0_m0_read                           (mm_bridge_0_m0_read),                             //                                        .read
-		.mm_bridge_0_m0_readdata                       (mm_bridge_0_m0_readdata),                         //                                        .readdata
-		.mm_bridge_0_m0_readdatavalid                  (mm_bridge_0_m0_readdatavalid),                    //                                        .readdatavalid
-		.mm_bridge_0_m0_write                          (mm_bridge_0_m0_write),                            //                                        .write
-		.mm_bridge_0_m0_writedata                      (mm_bridge_0_m0_writedata),                        //                                        .writedata
-		.mm_bridge_0_m0_debugaccess                    (mm_bridge_0_m0_debugaccess),                      //                                        .debugaccess
-		.pulse_delay_pio_s1_address                    (mm_interconnect_1_pulse_delay_pio_s1_address),    //                      pulse_delay_pio_s1.address
-		.pulse_delay_pio_s1_write                      (mm_interconnect_1_pulse_delay_pio_s1_write),      //                                        .write
-		.pulse_delay_pio_s1_readdata                   (mm_interconnect_1_pulse_delay_pio_s1_readdata),   //                                        .readdata
-		.pulse_delay_pio_s1_writedata                  (mm_interconnect_1_pulse_delay_pio_s1_writedata),  //                                        .writedata
-		.pulse_delay_pio_s1_chipselect                 (mm_interconnect_1_pulse_delay_pio_s1_chipselect), //                                        .chipselect
-		.pulse_start_pio_s1_address                    (mm_interconnect_1_pulse_start_pio_s1_address),    //                      pulse_start_pio_s1.address
-		.pulse_start_pio_s1_write                      (mm_interconnect_1_pulse_start_pio_s1_write),      //                                        .write
-		.pulse_start_pio_s1_readdata                   (mm_interconnect_1_pulse_start_pio_s1_readdata),   //                                        .readdata
-		.pulse_start_pio_s1_writedata                  (mm_interconnect_1_pulse_start_pio_s1_writedata),  //                                        .writedata
-		.pulse_start_pio_s1_chipselect                 (mm_interconnect_1_pulse_start_pio_s1_chipselect), //                                        .chipselect
-		.pulse_width_pio_s1_address                    (mm_interconnect_1_pulse_width_pio_s1_address),    //                      pulse_width_pio_s1.address
-		.pulse_width_pio_s1_write                      (mm_interconnect_1_pulse_width_pio_s1_write),      //                                        .write
-		.pulse_width_pio_s1_readdata                   (mm_interconnect_1_pulse_width_pio_s1_readdata),   //                                        .readdata
-		.pulse_width_pio_s1_writedata                  (mm_interconnect_1_pulse_width_pio_s1_writedata),  //                                        .writedata
-		.pulse_width_pio_s1_chipselect                 (mm_interconnect_1_pulse_width_pio_s1_chipselect)  //                                        .chipselect
+		.clk_0_clk_clk                                 (clk_clk),                                              //                               clk_0_clk.clk
+		.mm_bridge_0_reset_reset_bridge_in_reset_reset (rst_controller_reset_out_reset),                       // mm_bridge_0_reset_reset_bridge_in_reset.reset
+		.mm_bridge_0_m0_address                        (mm_bridge_0_m0_address),                               //                          mm_bridge_0_m0.address
+		.mm_bridge_0_m0_waitrequest                    (mm_bridge_0_m0_waitrequest),                           //                                        .waitrequest
+		.mm_bridge_0_m0_burstcount                     (mm_bridge_0_m0_burstcount),                            //                                        .burstcount
+		.mm_bridge_0_m0_byteenable                     (mm_bridge_0_m0_byteenable),                            //                                        .byteenable
+		.mm_bridge_0_m0_read                           (mm_bridge_0_m0_read),                                  //                                        .read
+		.mm_bridge_0_m0_readdata                       (mm_bridge_0_m0_readdata),                              //                                        .readdata
+		.mm_bridge_0_m0_readdatavalid                  (mm_bridge_0_m0_readdatavalid),                         //                                        .readdatavalid
+		.mm_bridge_0_m0_write                          (mm_bridge_0_m0_write),                                 //                                        .write
+		.mm_bridge_0_m0_writedata                      (mm_bridge_0_m0_writedata),                             //                                        .writedata
+		.mm_bridge_0_m0_debugaccess                    (mm_bridge_0_m0_debugaccess),                           //                                        .debugaccess
+		.pulse_delay_pio_s1_address                    (mm_interconnect_1_pulse_delay_pio_s1_address),         //                      pulse_delay_pio_s1.address
+		.pulse_delay_pio_s1_write                      (mm_interconnect_1_pulse_delay_pio_s1_write),           //                                        .write
+		.pulse_delay_pio_s1_readdata                   (mm_interconnect_1_pulse_delay_pio_s1_readdata),        //                                        .readdata
+		.pulse_delay_pio_s1_writedata                  (mm_interconnect_1_pulse_delay_pio_s1_writedata),       //                                        .writedata
+		.pulse_delay_pio_s1_chipselect                 (mm_interconnect_1_pulse_delay_pio_s1_chipselect),      //                                        .chipselect
+		.pulse_repetition_pio_s1_address               (mm_interconnect_1_pulse_repetition_pio_s1_address),    //                 pulse_repetition_pio_s1.address
+		.pulse_repetition_pio_s1_write                 (mm_interconnect_1_pulse_repetition_pio_s1_write),      //                                        .write
+		.pulse_repetition_pio_s1_readdata              (mm_interconnect_1_pulse_repetition_pio_s1_readdata),   //                                        .readdata
+		.pulse_repetition_pio_s1_writedata             (mm_interconnect_1_pulse_repetition_pio_s1_writedata),  //                                        .writedata
+		.pulse_repetition_pio_s1_chipselect            (mm_interconnect_1_pulse_repetition_pio_s1_chipselect), //                                        .chipselect
+		.pulse_start_pio_s1_address                    (mm_interconnect_1_pulse_start_pio_s1_address),         //                      pulse_start_pio_s1.address
+		.pulse_start_pio_s1_write                      (mm_interconnect_1_pulse_start_pio_s1_write),           //                                        .write
+		.pulse_start_pio_s1_readdata                   (mm_interconnect_1_pulse_start_pio_s1_readdata),        //                                        .readdata
+		.pulse_start_pio_s1_writedata                  (mm_interconnect_1_pulse_start_pio_s1_writedata),       //                                        .writedata
+		.pulse_start_pio_s1_chipselect                 (mm_interconnect_1_pulse_start_pio_s1_chipselect),      //                                        .chipselect
+		.pulse_width_pio_s1_address                    (mm_interconnect_1_pulse_width_pio_s1_address),         //                      pulse_width_pio_s1.address
+		.pulse_width_pio_s1_write                      (mm_interconnect_1_pulse_width_pio_s1_write),           //                                        .write
+		.pulse_width_pio_s1_readdata                   (mm_interconnect_1_pulse_width_pio_s1_readdata),        //                                        .readdata
+		.pulse_width_pio_s1_writedata                  (mm_interconnect_1_pulse_width_pio_s1_writedata),       //                                        .writedata
+		.pulse_width_pio_s1_chipselect                 (mm_interconnect_1_pulse_width_pio_s1_chipselect)       //                                        .chipselect
 	);
 
 	altera_reset_controller #(

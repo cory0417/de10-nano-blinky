@@ -6,12 +6,13 @@
   * Parameters:
   *   - clk: Clock input
   *   - reset_n: Active low reset input
-  *   - start: Start signal to initiate pulse generation
+  *   - start_in: Start signal to initiate pulse generation (from external source)
   *   - delay_cycles: Number of clock cycles for the delay before the pulse
   *   - pulse_width_cycles: Number of clock cycles for the pulse width
   *   - repetition: Number of repetitions for the pulse generation -- 0 means infinite
   *
   * Outputs:
+  *   - start_ack: Acknowledgment signal for the start input
   *   - pulse_out: Generated pulse output
   *   - pulse_led: LED indicator for the pulse state
   *   - delay_led: LED indicator for the delay state
@@ -31,10 +32,11 @@
 module pulse_generator (
     input  logic        clk,
     input  logic        reset_n,
-    input  logic        start,
+    input  logic        start_in,
     input  logic [31:0] delay_cycles,
     input  logic [31:0] pulse_width_cycles,
-    input  logic [ 9:0] repetition,
+    input  logic [15:0] repetition,
+    output logic        start_ack,
     output logic        pulse_out,
     output logic        pulse_led,
     output logic        delay_led
@@ -50,27 +52,33 @@ module pulse_generator (
 
   state_t state;
   logic [31:0] counter;
-  logic [9:0] repetition_counter;
+  logic [15:0] repetition_counter;
   logic is_last_repetition;
+  logic pulse_done;
+  logic internal_start;
 
   assign is_last_repetition = (repetition_counter == 1) ? 1'b1 : 1'b0;
+
 
   always_ff @(posedge clk or negedge reset_n) begin
     if (!reset_n) begin
       state <= IDLE;
       counter <= 32'd0;
-      repetition_counter <= repetition;
+      repetition_counter <= 16'd0;
+      start_ack <= 1'b0;
     end else begin
       case (state)
         IDLE: begin
-          if (start) begin
+          if (start_in) begin
             counter <= delay_cycles;
-            state <= DELAY;
             repetition_counter <= repetition;
+            state <= DELAY;
+            start_ack <= 1'b1;  // Acknowledge start
           end
         end
 
         DELAY: begin
+          start_ack <= 1'b0;  // Clear start_ack when in DELAY
           if (counter == 32'd1) begin
             counter <= pulse_width_cycles;
             state   <= PULSE;
@@ -81,15 +89,13 @@ module pulse_generator (
 
         PULSE: begin
           if (counter == 32'd1) begin
-            if (is_last_repetition == 1'b1) begin
+            if (is_last_repetition) begin
               state <= IDLE;
-              repetition_counter <= 10'd0;
+              repetition_counter <= 16'd0;
             end else begin
               counter <= delay_cycles;
               state   <= DELAY;
-              if (repetition_counter > 0) begin
-                repetition_counter <= repetition_counter - 1;
-              end
+              if (repetition_counter > 0) repetition_counter <= repetition_counter - 1;
             end
           end else begin
             counter <= counter - 32'd1;
@@ -101,6 +107,48 @@ module pulse_generator (
 
   assign pulse_led = (state == PULSE);
   assign delay_led = (state == DELAY);
-  assign pulse_out = (state == PULSE && reset_n);
+  assign pulse_out = (state == PULSE);
+
+endmodule
+
+module pulse_generator_pio (
+    input  logic        clk,
+    input  logic        reset_n,
+    input  logic        start_pio,
+    input  logic [31:0] delay_cycles,
+    input  logic [31:0] pulse_width_cycles,
+    input  logic [15:0] repetition,
+    output logic        pulse_out,
+    output logic        pulse_led,
+    output logic        delay_led
+);
+
+  logic req_ff0, req_ff1, start_edge;
+
+  always_ff @(posedge clk or negedge reset_n) begin
+    if (!reset_n) begin
+      req_ff0 <= 0;
+      req_ff1 <= 0;
+    end else begin
+      req_ff0 <= start_pio;  // PIO from CPU
+      req_ff1 <= req_ff0;
+    end
+  end
+
+  assign start_edge = start_pio & ~req_ff0;  // one-cycle pulse
+
+  // Instantiate the pulse generator module
+  pulse_generator u_pulse_generator (
+      .clk(clk),
+      .reset_n(reset_n),
+      .start_in(start_edge),
+      .delay_cycles(delay_cycles),
+      .pulse_width_cycles(pulse_width_cycles),
+      .repetition(repetition),
+      .start_ack(start_ack),
+      .pulse_out(pulse_out),
+      .pulse_led(pulse_led),
+      .delay_led(delay_led)
+  );
 
 endmodule

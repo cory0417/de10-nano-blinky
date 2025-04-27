@@ -46,38 +46,52 @@ module DE10_NANO_SoC_GHRD (
   //=======================================================
   //  REG/WIRE declarations
   //=======================================================
-  wire        hps_fpga_reset_n;
-  wire        fpga_clk_pll_100;
-  wire        pll_locked;
-  wire        pulse_start_pio_export;
+  wire hps_fpga_reset_n;
+  wire fpga_clk_pll_100;
+  wire pll_locked;
+  wire pulse_start_pio_export;
   wire [31:0] pulse_delay_pio_export;
   wire [31:0] pulse_width_pio_export;
-  wire        pulse_out_dummy;
+  wire [15:0] pulse_repetition_pio_export;
+  wire pulse_out_camera, pulse_out_strobe;
 
   //=======================================================
   //  Structural coding*
   //=======================================================
-
-  pulse_generator p0 (
+  pulse_generator_pio laser_pulse (
       .clk(fpga_clk_pll_100),
       .reset_n(hps_fpga_reset_n),
-      .start(pulse_start_pio_export),
+      .start_pio(pulse_start_pio_export),
       .delay_cycles(pulse_delay_pio_export),
       .pulse_width_cycles(pulse_width_pio_export),
+      .repetition(16'd0),
       .pulse_out(pulse_out),
       .pulse_led(LED[1]),
       .delay_led(LED[0])
   );
 
-  pulse_generator p1 (
+  pulse_generator_pio camera_pulse (
       .clk(fpga_clk_pll_100),
       .reset_n(hps_fpga_reset_n),
-      .start(pulse_start_pio_export),
+      .start_pio(pulse_start_pio_export),
       .delay_cycles(pulse_delay_pio_export),
       .pulse_width_cycles(pulse_width_pio_export),
-      .pulse_out(pulse_out_dummy),
+      .repetition(pulse_repetition_pio_export),
+      .pulse_out(pulse_out_camera),
       .pulse_led(LED[3]),
       .delay_led(LED[2])
+  );
+
+  pulse_generator_pio strobe_pulse (
+      .clk(fpga_clk_pll_100),
+      .reset_n(hps_fpga_reset_n),
+      .start_pio(pulse_start_pio_export),
+      .delay_cycles(pulse_delay_pio_export),
+      .pulse_width_cycles(pulse_width_pio_export),
+      .repetition(pulse_repetition_pio_export),
+      .pulse_out(pulse_out_strobe),
+      .pulse_led(LED[5]),
+      .delay_led(LED[4])
   );
 
   soc_system u0 (
@@ -110,6 +124,7 @@ module DE10_NANO_SoC_GHRD (
       .pulse_delay_pio_export(pulse_delay_pio_export),
       .pulse_width_pio_export(pulse_width_pio_export),
       .pulse_start_pio_export(pulse_start_pio_export),
+      .pulse_repetition_pio_export(pulse_repetition_pio_export),
       // Reset
       .reset_reset_n(hps_fpga_reset_n),  //                      reset.reset_n
   );
